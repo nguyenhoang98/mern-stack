@@ -1,38 +1,123 @@
-.App {
-  text-align: center;
-}
+import { useContext, useState } from 'react';
+import { PostContext } from '../../Context/PostContext';
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
+import { List, Avatar, Skeleton, Input, Form, Button } from 'antd';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+function CommentContent(props) {
+  const [id, setId] = useState(null);
+  const {
+    isDisableInput,
+    setIsDisableInput,
+    postState: { objComment },
+    formEdit,
+    handleDeleteComment,
+    handleUpdateComment,
+  } = useContext(PostContext);
+  const onFinish = async () => {
+    const request = formEdit.getFieldValue();
+    console.log(request);
+    setIsDisableInput(true);
+    handleUpdateComment(request);
+    try {
+    } catch (error) {}
+  };
+  return (
+    <List
+      itemLayout="horizontal"
+      dataSource={objComment}
+      renderItem={item => (
+        <List.Item
+          key={item._id}
+          actions={[
+            <EditOutlined
+              onClick={() => {
+                setId(item._id);
+                setIsDisableInput(false);
+                formEdit.setFieldsValue({
+                  id: item._id,
+                  content: item.content,
+                });
+              }}
+            />,
+            <DeleteOutlined onClick={() => handleDeleteComment(item._id)} />,
+          ]}
+        >
+          <Skeleton avatar title={false} loading={item.loading} active>
+            <List.Item.Meta
+              avatar={
+                <Avatar
+                  style={avatar}
+                  icon={
+                    item?.user?.username
+                      ? item?.user?.username[0].toUpperCase()
+                      : null
+                  }
+                />
+              }
+              title={<a href="https://ant.design">{item.user.username}</a>}
+              description={
+                isDisableInput || id !== item._id ? (
+                  <div
+                    style={{
+                      cursor: 'pointer',
+                    }}
+                    onDoubleClick={() => {
+                      setId(item._id);
+                      setIsDisableInput(false);
+                      formEdit.setFieldsValue({
+                        id: item._id,
+                        content: item.content,
+                      });
+                    }}
+                  >
+                    {item.content}
+                  </div>
+                ) : (
+                  <Form
+                    name="formEdit"
+                    form={formEdit}
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 16 }}
+                    initialValues={{ id: '', content: '' }}
+                    onFinish={onFinish}
+                    style={{
+                      padding: '0px',
+                    }}
+                  >
+                    <Form.Item
+                      name="content"
+                      rules={[
+                        {
+                          required: true,
+                          message: 'Please input your username!',
+                        },
+                      ]}
+                      style={{
+                        padding: '0px',
+                      }}
+                    >
+                      <Input
+                        style={{
+                          padding: '0px',
+                        }}
+                        onBlur={() => setIsDisableInput(true)}
+                      />
+                    </Form.Item>
+                  </Form>
+                )
+              }
+            />
+          </Skeleton>
+        </List.Item>
+      )}
+    />
+  );
 }
+const avatar = {
+  backgroundColor: 'orange',
+  verticalAlign: 'middle',
+  cursor: 'pointer',
+};
+export default CommentContent;
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
