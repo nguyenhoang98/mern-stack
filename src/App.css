@@ -1,123 +1,48 @@
-import { useContext, useState } from 'react';
-import { PostContext } from '../../Context/PostContext';
-
-import { List, Avatar, Skeleton, Input, Form, Button } from 'antd';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-
-function CommentContent(props) {
-  const [id, setId] = useState(null);
-  const {
-    isDisableInput,
-    setIsDisableInput,
-    postState: { objComment },
-    formEdit,
-    handleDeleteComment,
-    handleUpdateComment,
-  } = useContext(PostContext);
-  const onFinish = async () => {
-    const request = formEdit.getFieldValue();
-    console.log(request);
-    setIsDisableInput(true);
-    handleUpdateComment(request);
-    try {
-    } catch (error) {}
-  };
-  return (
-    <List
-      itemLayout="horizontal"
-      dataSource={objComment}
-      renderItem={item => (
-        <List.Item
-          key={item._id}
-          actions={[
-            <EditOutlined
-              onClick={() => {
-                setId(item._id);
-                setIsDisableInput(false);
-                formEdit.setFieldsValue({
-                  id: item._id,
-                  content: item.content,
-                });
-              }}
-            />,
-            <DeleteOutlined onClick={() => handleDeleteComment(item._id)} />,
-          ]}
-        >
-          <Skeleton avatar title={false} loading={item.loading} active>
-            <List.Item.Meta
-              avatar={
-                <Avatar
-                  style={avatar}
-                  icon={
-                    item?.user?.username
-                      ? item?.user?.username[0].toUpperCase()
-                      : null
-                  }
-                />
-              }
-              title={<a href="https://ant.design">{item.user.username}</a>}
-              description={
-                isDisableInput || id !== item._id ? (
-                  <div
-                    style={{
-                      cursor: 'pointer',
-                    }}
-                    onDoubleClick={() => {
-                      setId(item._id);
-                      setIsDisableInput(false);
-                      formEdit.setFieldsValue({
-                        id: item._id,
-                        content: item.content,
-                      });
-                    }}
-                  >
-                    {item.content}
-                  </div>
-                ) : (
-                  <Form
-                    name="formEdit"
-                    form={formEdit}
-                    labelCol={{ span: 8 }}
-                    wrapperCol={{ span: 16 }}
-                    initialValues={{ id: '', content: '' }}
-                    onFinish={onFinish}
-                    style={{
-                      padding: '0px',
-                    }}
-                  >
-                    <Form.Item
-                      name="content"
-                      rules={[
-                        {
-                          required: true,
-                          message: 'Please input your username!',
-                        },
-                      ]}
-                      style={{
-                        padding: '0px',
-                      }}
-                    >
-                      <Input
-                        style={{
-                          padding: '0px',
-                        }}
-                        onBlur={() => setIsDisableInput(true)}
-                      />
-                    </Form.Item>
-                  </Form>
-                )
-              }
-            />
-          </Skeleton>
-        </List.Item>
-      )}
-    />
-  );
+{
+    "window.zoomLevel": 0,
+    "explorer.confirmDragAndDrop": false,
+    "git.ignoreWindowsGit27Warning": true,
+    "eslint.alwaysShowStatus": true,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "eslint.enable": false,
+    "[html]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "editor.formatOnSave": true,
+    "workbench.iconTheme": "material-icon-theme",
+    "prettier.singleQuote": true,
+    "eslint.codeAction.showDocumentation": {
+        "enable": true
+    },
+    "eslint.nodeEnv": "",
+    "arrow-parens": [
+        "error",
+        "as-needed"
+    ],
+    "prettier.arrowParens": "avoid",
+    "typescript.workspaceSymbols.scope": "currentProject",
+    "launch": {
+    
+    
+        "configurations": [],
+        "compounds": []
+    },
+    "html.format.contentUnformatted": "",
+    "html.format.extraLiners": "head, body, /html",
+    "editor.formatOnPaste": true,
+    "cSpell.diagnosticLevel": "Warning",
+    "html.format.wrapLineLength": 250,
+    "[jsonc]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+    "json.schemas": [
+    
+    ],
 }
-const avatar = {
-  backgroundColor: 'orange',
-  verticalAlign: 'middle',
-  cursor: 'pointer',
-};
-export default CommentContent;
-
